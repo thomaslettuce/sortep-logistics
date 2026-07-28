@@ -1,6 +1,12 @@
 import { submitApplication } from "./actions";
 
-export default function ApplyPage() {
+export default async function ApplyPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ submitted?: string }>;
+}) {
+  const params = await searchParams;
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
       <div className="mb-10">
@@ -13,13 +19,22 @@ export default function ApplyPage() {
         </p>
       </div>
 
+      {params.submitted === "1" && (
+        <div className="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+          Application submitted successfully. We’ll be in touch.
+        </div>
+      )}
+
       <form
         action={submitApplication}
         className="bg-white border border-slate-200 rounded-xl p-8 shadow-sm space-y-6"
       >
         {/* Full Name */}
         <div>
-          <label htmlFor="fullName" className="block text-sm font-medium text-slate-700 mb-1.5">
+          <label
+            htmlFor="fullName"
+            className="block text-sm font-medium text-slate-700 mb-1.5"
+          >
             Full Name *
           </label>
           <input
@@ -34,7 +49,10 @@ export default function ApplyPage() {
 
         {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1.5">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-slate-700 mb-1.5"
+          >
             Email Address *
           </label>
           <input
@@ -49,7 +67,10 @@ export default function ApplyPage() {
 
         {/* Phone */}
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-1.5">
+          <label
+            htmlFor="phone"
+            className="block text-sm font-medium text-slate-700 mb-1.5"
+          >
             Phone Number *
           </label>
           <input
@@ -64,7 +85,10 @@ export default function ApplyPage() {
 
         {/* CDL Info */}
         <div>
-          <label htmlFor="cdl" className="block text-sm font-medium text-slate-700 mb-1.5">
+          <label
+            htmlFor="cdl"
+            className="block text-sm font-medium text-slate-700 mb-1.5"
+          >
             CDL Class & Endorsements
           </label>
           <input
@@ -78,7 +102,10 @@ export default function ApplyPage() {
 
         {/* Years of Experience */}
         <div>
-          <label htmlFor="experience" className="block text-sm font-medium text-slate-700 mb-1.5">
+          <label
+            htmlFor="experience"
+            className="block text-sm font-medium text-slate-700 mb-1.5"
+          >
             Years of Experience
           </label>
           <input
@@ -92,7 +119,10 @@ export default function ApplyPage() {
 
         {/* Message */}
         <div>
-          <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-1.5">
+          <label
+            htmlFor="message"
+            className="block text-sm font-medium text-slate-700 mb-1.5"
+          >
             Additional Information
           </label>
           <textarea
