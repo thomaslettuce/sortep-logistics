@@ -189,61 +189,63 @@ export default async function PortalPage() {
         </div>
       </section>
 
-      {/* My Expenses */}
-      <section className="mb-12">
-        <h2 className="text-xl font-semibold text-slate-900 mb-4">
-          My Expenses
-        </h2>
-        <p className="text-sm text-slate-500 mb-4">
-          Expenses processed through SORTEP (fuel, insurance, etc.) that may be
-          deducted on settlements.
-        </p>
+      {/* My Expenses — only for lease-on / independent contractors */}
+      {employmentType !== "company_driver" && (
+        <section className="mb-12">
+          <h2 className="text-xl font-semibold text-slate-900 mb-4">
+            My Expenses
+          </h2>
+          <p className="text-sm text-slate-500 mb-4">
+            Expenses processed through SORTEP (fuel, insurance, etc.) that may
+            be deducted on your payouts.
+          </p>
 
-        {driverExpenses && driverExpenses.length > 0 ? (
-          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 border-b">
-                <tr>
-                  <th className="text-left px-5 py-3 font-medium text-slate-600">
-                    Date
-                  </th>
-                  <th className="text-left px-5 py-3 font-medium text-slate-600">
-                    Category
-                  </th>
-                  <th className="text-left px-5 py-3 font-medium text-slate-600">
-                    Description
-                  </th>
-                  <th className="text-right px-5 py-3 font-medium text-slate-600">
-                    Amount
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {driverExpenses.map((expense) => (
-                  <tr key={expense.id} className="hover:bg-slate-50">
-                    <td className="px-5 py-4 text-slate-700">
-                      {new Date(expense.expense_date).toLocaleDateString()}
-                    </td>
-                    <td className="px-5 py-4 capitalize text-slate-700">
-                      {expense.category}
-                    </td>
-                    <td className="px-5 py-4 text-slate-600">
-                      {expense.description || "—"}
-                    </td>
-                    <td className="px-5 py-4 text-right font-medium text-slate-900">
-                      ${Number(expense.amount).toLocaleString()}
-                    </td>
+          {driverExpenses && driverExpenses.length > 0 ? (
+            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+              <table className="w-full text-sm">
+                <thead className="bg-slate-50 border-b">
+                  <tr>
+                    <th className="text-left px-5 py-3 font-medium text-slate-600">
+                      Date
+                    </th>
+                    <th className="text-left px-5 py-3 font-medium text-slate-600">
+                      Category
+                    </th>
+                    <th className="text-left px-5 py-3 font-medium text-slate-600">
+                      Description
+                    </th>
+                    <th className="text-right px-5 py-3 font-medium text-slate-600">
+                      Amount
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="bg-white border border-slate-200 rounded-xl p-8 text-center text-slate-500">
-            No expenses assigned to you yet.
-          </div>
-        )}
-      </section>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {driverExpenses.map((expense) => (
+                    <tr key={expense.id} className="hover:bg-slate-50">
+                      <td className="px-5 py-4 text-slate-700">
+                        {new Date(expense.expense_date).toLocaleDateString()}
+                      </td>
+                      <td className="px-5 py-4 capitalize text-slate-700">
+                        {expense.category}
+                      </td>
+                      <td className="px-5 py-4 text-slate-600">
+                        {expense.description || "—"}
+                      </td>
+                      <td className="px-5 py-4 text-right font-medium text-slate-900">
+                        ${Number(expense.amount).toLocaleString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="bg-white border border-slate-200 rounded-xl p-8 text-center text-slate-500">
+              No expenses assigned to you yet.
+            </div>
+          )}
+        </section>
+      )}
 
       {/* My Payouts */}
       <section className="mb-12">
@@ -290,10 +292,10 @@ export default async function PortalPage() {
                     </div>
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${p.status === "paid"
-                          ? "bg-green-100 text-green-800"
-                          : p.status === "approved"
-                            ? "bg-blue-100 text-blue-800"
-                            : "bg-yellow-100 text-yellow-800"
+                        ? "bg-green-100 text-green-800"
+                        : p.status === "approved"
+                          ? "bg-blue-100 text-blue-800"
+                          : "bg-yellow-100 text-yellow-800"
                         }`}
                     >
                       {p.status}
