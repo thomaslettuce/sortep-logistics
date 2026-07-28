@@ -5,10 +5,13 @@ import { notFound } from "next/navigation";
 
 export default async function PayPeriodDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ error?: string; count?: string; closed?: string }>;
 }) {
   const { id } = await params;
+  const query = await searchParams;
   const supabase = await createClient();
 
   const { data: period } = await supabase
@@ -49,6 +52,26 @@ export default async function PayPeriodDetailPage({
           <span className="capitalize">{period.status}</span>
         </p>
       </div>
+
+      {query.error === "unpaid" && (
+        <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          Cannot close this period until all payouts are marked{" "}
+          <strong>Paid</strong>
+          {query.count ? ` (${query.count} remaining)` : ""}.
+        </div>
+      )}
+
+      {query.error === "no_payouts" && (
+        <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          Generate payouts before closing this period.
+        </div>
+      )}
+
+      {query.closed === "1" && (
+        <div className="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+          Pay period closed successfully.
+        </div>
+      )}
 
       <div className="mb-8 flex flex-wrap gap-3 items-center">
         {period.status === "open" ? (

@@ -268,17 +268,17 @@ export async function closePayPeriod(formData: FormData) {
 
   if (payoutsError) {
     console.error(payoutsError);
-    throw new Error("Failed to check payout statuses");
+    redirect(`/admin/payouts/${payPeriodId}?error=check_failed`);
   }
 
   if (!payouts || payouts.length === 0) {
-    throw new Error("Generate payouts before closing this period");
+    redirect(`/admin/payouts/${payPeriodId}?error=no_payouts`);
   }
 
   const unpaid = payouts.filter((p) => p.status !== "paid");
   if (unpaid.length > 0) {
-    throw new Error(
-      `Cannot close period: ${unpaid.length} payout(s) are not marked Paid`
+    redirect(
+      `/admin/payouts/${payPeriodId}?error=unpaid&count=${unpaid.length}`
     );
   }
 
@@ -289,7 +289,7 @@ export async function closePayPeriod(formData: FormData) {
 
   if (error) {
     console.error(error);
-    throw new Error("Failed to close pay period");
+    redirect(`/admin/payouts/${payPeriodId}?error=close_failed`);
   }
 
   await logActivity({
@@ -301,5 +301,5 @@ export async function closePayPeriod(formData: FormData) {
 
   revalidatePath("/admin/payouts");
   revalidatePath(`/admin/payouts/${payPeriodId}`);
-  redirect(`/admin/payouts/${payPeriodId}`);
+  redirect(`/admin/payouts/${payPeriodId}?closed=1`);
 }
