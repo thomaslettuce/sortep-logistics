@@ -1,3 +1,4 @@
+import { PortalPayoutsTable } from "@/components/PortalPayoutsTable";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
@@ -104,7 +105,17 @@ export default async function PortalPage() {
     .select(
       `
       *,
-      pay_periods (name, start_date, end_date, status)
+      pay_periods (start_date, end_date, status),
+      payout_loads (
+        loads (
+          load_number,
+          origin,
+          destination,
+          rate,
+          pickup_date,
+          status
+        )
+      )
     `
     )
     .eq("driver_id", driver.id)
@@ -247,140 +258,17 @@ export default async function PortalPage() {
         </section>
       )}
 
-      {/* My Payouts */}
+            {/* My Payouts */}
       <section className="mb-12">
         <h2 className="text-xl font-semibold text-slate-900 mb-4">
           My Payouts
         </h2>
         <p className="text-sm text-slate-500 mb-4">
           Pay-period totals based on your loads and applicable deductions.
+          Expand a row to see the loads included.
         </p>
 
-        {payouts && payouts.length > 0 ? (
-          <div className="space-y-4">
-            {payouts.map((p) => {
-              const gross = Number(p.gross_amount || 0);
-              const driverPay = Number(p.driver_pay_amount || 0);
-              const leaseOn = Number(p.lease_on_fee_amount || 0);
-              const factoring = Number(p.factoring_fee_amount || 0);
-              const expenses = Number(p.expense_total || 0);
-              const net = Number(p.net_amount || 0);
-
-              return (
-                <div
-                  key={p.id}
-                  className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm"
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
-                    <div>
-                      <div className="font-semibold text-slate-900">
-                        {p.pay_periods?.name || "Pay Period"}
-                      </div>
-                      <div className="text-sm text-slate-500">
-                        {p.pay_periods?.start_date
-                          ? new Date(
-                            p.pay_periods.start_date
-                          ).toLocaleDateString()
-                          : ""}{" "}
-                        –{" "}
-                        {p.pay_periods?.end_date
-                          ? new Date(
-                            p.pay_periods.end_date
-                          ).toLocaleDateString()
-                          : ""}
-                      </div>
-                    </div>
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${p.status === "paid"
-                        ? "bg-green-100 text-green-800"
-                        : p.status === "approved"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-yellow-100 text-yellow-800"
-                        }`}
-                    >
-                      {p.status}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                    <div className="flex justify-between border-b border-slate-100 py-2">
-                      <span className="text-slate-600">Gross Revenue</span>
-                      <span className="font-medium text-slate-900">
-                        ${gross.toLocaleString()}
-                      </span>
-                    </div>
-
-                    {driverPay > 0 && (
-                      <div className="flex justify-between border-b border-slate-100 py-2">
-                        <span className="text-slate-600">
-                          Driver Pay
-                          {p.driver_pay_pct != null
-                            ? ` (${Number(p.driver_pay_pct)}%)`
-                            : ""}
-                        </span>
-                        <span className="font-medium text-slate-900">
-                          ${driverPay.toLocaleString()}
-                        </span>
-                      </div>
-                    )}
-
-                    {leaseOn > 0 && (
-                      <div className="flex justify-between border-b border-slate-100 py-2">
-                        <span className="text-slate-600">
-                          Lease-On Fee
-                          {p.lease_on_fee_pct != null
-                            ? ` (${Number(p.lease_on_fee_pct)}%)`
-                            : ""}
-                        </span>
-                        <span className="font-medium text-slate-900">
-                          ${leaseOn.toLocaleString()}
-                        </span>
-                      </div>
-                    )}
-
-                    {factoring > 0 && (
-                      <div className="flex justify-between border-b border-slate-100 py-2">
-                        <span className="text-slate-600">
-                          Factoring Fee
-                          {p.factoring_fee_pct != null
-                            ? ` (${Number(p.factoring_fee_pct)}%)`
-                            : ""}
-                        </span>
-                        <span className="font-medium text-slate-900">
-                          ${factoring.toLocaleString()}
-                        </span>
-                      </div>
-                    )}
-
-                    {expenses > 0 && (
-                      <div className="flex justify-between border-b border-slate-100 py-2">
-                        <span className="text-slate-600">
-                          Expenses (fuel, insurance, etc.)
-                        </span>
-                        <span className="font-medium text-slate-900">
-                          ${expenses.toLocaleString()}
-                        </span>
-                      </div>
-                    )}
-
-                    <div className="flex justify-between border-b border-slate-100 py-2 sm:col-span-2">
-                      <span className="font-semibold text-slate-900">
-                        Net Payout
-                      </span>
-                      <span className="font-bold text-slate-900">
-                        ${net.toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="bg-white border border-slate-200 rounded-xl p-8 text-center text-slate-500">
-            No payouts available yet.
-          </div>
-        )}
+        <PortalPayoutsTable payouts={(payouts as any) || []} />
       </section>
 
       {/* Loads */}
