@@ -117,23 +117,21 @@ export function AdminLoadsTable({
                   <td className="px-4 py-3">
                     <div className="flex flex-col gap-1">
                       <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${
-                          load.status === "delivered"
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${load.status === "delivered"
                             ? "bg-green-100 text-green-800"
                             : "bg-blue-100 text-blue-800"
-                        }`}
+                          }`}
                       >
                         {(load.status || "in_transit").replace("_", " ")}
                       </span>
                       {isAdmin && (
                         <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${
-                            load.payment_status === "paid"
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${load.payment_status === "paid"
                               ? "bg-emerald-100 text-emerald-800"
                               : load.payment_status === "factored"
                                 ? "bg-amber-100 text-amber-800"
                                 : "bg-slate-100 text-slate-700"
-                          }`}
+                            }`}
                         >
                           {(load.payment_status || "unbilled").replace(
                             "_",
@@ -355,7 +353,7 @@ export function AdminLoadsTable({
                           </select>
                         </div>
 
-                                                <div className="md:col-span-3">
+                        <div className="md:col-span-3">
                           <label className="block text-xs font-medium text-slate-600 mb-1">
                             Notes
                           </label>

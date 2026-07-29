@@ -85,7 +85,7 @@ export async function addLoad(formData: FormData) {
   }
 
   const file = formData.get("rate_confirmation") as File | null;
-    const path = await uploadRateConfirmation(
+  const path = await uploadRateConfirmation(
     supabase,
     created.id,
     load_number,
@@ -129,14 +129,14 @@ export async function updateLoad(formData: FormData) {
   const payment_date = (formData.get("payment_date") as string) || null;
   const factoring_ref = (formData.get("factoring_ref") as string) || null;
 
-    const rate = parseFloat((formData.get("rate") as string) || "0") || 0;
+  const rate = parseFloat((formData.get("rate") as string) || "0") || 0;
 
   const accessorials =
     parseFloat((formData.get("accessorials") as string) || "0") || 0;
   const gross = Number((rate + accessorials).toFixed(2));
 
   const file = formData.get("rate_confirmation") as File | null;
-    const path = await uploadRateConfirmation(
+  const path = await uploadRateConfirmation(
     supabase,
     loadId,
     load_number,

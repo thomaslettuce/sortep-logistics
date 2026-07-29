@@ -23,10 +23,10 @@ export default async function LoadsPage({
   const { data: authData } = await supabase.auth.getUser();
   const { data: currentDriver } = authData?.user
     ? await supabase
-        .from("drivers")
-        .select("role")
-        .eq("user_id", authData.user.id)
-        .single()
+      .from("drivers")
+      .select("role")
+      .eq("user_id", authData.user.id)
+      .single()
     : { data: null };
 
   const isAdmin = currentDriver?.role === "admin";
