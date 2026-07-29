@@ -5,6 +5,37 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+async function uploadRateConfirmation(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  loadId: string,
+  loadNumber: string,
+  file: File | null
+) {
+  if (!file || file.size === 0) return null;
+
+  const ext = file.name.split(".").pop()?.toLowerCase() || "pdf";
+  const safeLoadNumber = (loadNumber || "load")
+    .replace(/[^a-zA-Z0-9-_]/g, "_")
+    .slice(0, 40);
+  const path = `${loadId}/${safeLoadNumber}_rateconfirmation.${ext}`;
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+
+  const { error } = await supabase.storage
+    .from("load-documents")
+    .upload(path, buffer, {
+      contentType: file.type || "application/pdf",
+      upsert: true,
+    });
+
+  if (error) {
+    console.error("rate confirmation upload error:", error);
+    throw new Error(error.message || "Failed to upload rate confirmation");
+  }
+
+  return path;
+}
+
 export async function addLoad(formData: FormData) {
   const supabase = await createClient();
 
@@ -24,27 +55,54 @@ export async function addLoad(formData: FormData) {
 
   const gross = Number((rate + accessorials).toFixed(2));
 
-  await supabase.from("loads").insert({
+  const { data: created, error } = await supabase
+    .from("loads")
+    .insert({
+      load_number,
+      customer: customer || null,
+      origin: origin || null,
+      destination: destination || null,
+      pickup_date: pickup_date || null,
+      delivery_date: delivery_date || null,
+      linehaul: rate,
+      detention: 0,
+      accessorials,
+      fuel_surcharge: 0,
+      rate: gross,
+      notes,
+      status: "in_transit",
+      driver_id: driver_id || null,
+      truck_id: truck_id || null,
+    })
+    .select("id")
+    .single();
+
+  if (error || !created) {
+    console.error("addLoad insert error:", error);
+    throw new Error(
+      error?.message || error?.details || "Failed to create load"
+    );
+  }
+
+  const file = formData.get("rate_confirmation") as File | null;
+    const path = await uploadRateConfirmation(
+    supabase,
+    created.id,
     load_number,
-    customer: customer || null,
-    origin: origin || null,
-    destination: destination || null,
-    pickup_date: pickup_date || null,
-    delivery_date: delivery_date || null,
-    linehaul: rate,
-    detention: 0,
-    accessorials,
-    fuel_surcharge: 0,
-    rate: gross,
-    notes,
-    status: "in_transit",
-    driver_id: driver_id || null,
-    truck_id: truck_id || null,
-  });
+    file
+  );
+
+  if (path) {
+    await supabase
+      .from("loads")
+      .update({ rate_confirmation_path: path })
+      .eq("id", created.id);
+  }
 
   await logActivity({
     action: "create",
     entityType: "load",
+    entityId: created.id,
     summary: `Created load ${load_number} (gross $${gross})`,
   });
 
@@ -71,11 +129,19 @@ export async function updateLoad(formData: FormData) {
   const payment_date = (formData.get("payment_date") as string) || null;
   const factoring_ref = (formData.get("factoring_ref") as string) || null;
 
-  const rate = parseFloat((formData.get("rate") as string) || "0") || 0;
+    const rate = parseFloat((formData.get("rate") as string) || "0") || 0;
 
   const accessorials =
     parseFloat((formData.get("accessorials") as string) || "0") || 0;
   const gross = Number((rate + accessorials).toFixed(2));
+
+  const file = formData.get("rate_confirmation") as File | null;
+    const path = await uploadRateConfirmation(
+    supabase,
+    loadId,
+    load_number,
+    file
+  );
 
   const { error } = await supabase
     .from("loads")
@@ -96,6 +162,7 @@ export async function updateLoad(formData: FormData) {
       factoring_ref,
       driver_id: driver_id || null,
       truck_id: truck_id || null,
+      ...(path ? { rate_confirmation_path: path } : {}),
     })
     .eq("id", loadId);
 

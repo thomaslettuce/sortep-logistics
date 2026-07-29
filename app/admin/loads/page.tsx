@@ -263,6 +263,19 @@ export default async function LoadsPage({
           </div>
 
           <div className="md:col-span-3">
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Rate Confirmation
+            </label>
+            <input
+              type="file"
+              name="rate_confirmation"
+              required
+              accept=".pdf,.png,.jpg,.jpeg,.webp"
+              className="w-full text-sm text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-slate-100 file:text-slate-800"
+            />
+          </div>
+
+          <div className="md:col-span-3">
             <button
               type="submit"
               className="bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition"

@@ -1,5 +1,6 @@
 "use client";
 
+import { RateConfirmationButton } from "@/components/RateConfirmationButton";
 import { Fragment, useState } from "react";
 import { updateLoad } from "@/app/admin/loads/actions";
 
@@ -28,6 +29,7 @@ type LoadRow = {
   payment_status?: string | null;
   payment_date?: string | null;
   factoring_ref?: string | null;
+  rate_confirmation_path?: string | null;
   drivers?: { full_name: string | null; email: string | null } | null;
   trucks?: { unit_number: string | null } | null;
 };
@@ -353,7 +355,7 @@ export function AdminLoadsTable({
                           </select>
                         </div>
 
-                        <div className="md:col-span-3">
+                                                <div className="md:col-span-3">
                           <label className="block text-xs font-medium text-slate-600 mb-1">
                             Notes
                           </label>
@@ -363,6 +365,28 @@ export function AdminLoadsTable({
                             defaultValue={load.notes || ""}
                             className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm resize-none"
                           />
+                        </div>
+
+                        <div className="md:col-span-3">
+                          <label className="block text-xs font-medium text-slate-600 mb-1">
+                            Rate Confirmation
+                          </label>
+                          <div className="mb-2">
+                            <RateConfirmationButton
+                              path={load.rate_confirmation_path}
+                            />
+                          </div>
+                          <input
+                            type="file"
+                            name="rate_confirmation"
+                            accept=".pdf,.png,.jpg,.jpeg,.webp"
+                            className="w-full text-sm text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white file:text-slate-800"
+                          />
+                          {load.rate_confirmation_path && (
+                            <p className="text-xs text-slate-500 mt-1">
+                              Upload a new file to replace the existing one.
+                            </p>
+                          )}
                         </div>
 
                         <div className="md:col-span-3">
