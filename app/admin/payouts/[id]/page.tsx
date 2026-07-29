@@ -1,7 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
-import { generatePayouts, updatePayoutStatus, closePayPeriod } from "../actions";
+import {
+  generatePayouts,
+  updatePayoutStatus,
+  closePayPeriod,
+} from "../actions";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 export default async function PayPeriodDetailPage({
   params,
@@ -13,6 +17,19 @@ export default async function PayPeriodDetailPage({
   const { id } = await params;
   const query = await searchParams;
   const supabase = await createClient();
+
+  const { data: authData } = await supabase.auth.getUser();
+  if (!authData?.user) redirect("/auth/login");
+
+  const { data: currentDriver } = await supabase
+    .from("drivers")
+    .select("role")
+    .eq("user_id", authData.user.id)
+    .single();
+
+  if (!currentDriver || currentDriver.role !== "admin") {
+    redirect("/admin");
+  }
 
   const { data: period } = await supabase
     .from("pay_periods")
@@ -47,8 +64,8 @@ export default async function PayPeriodDetailPage({
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900">{period.name}</h1>
         <p className="text-slate-600 mt-1">
-          {new Date(period.start_date).toLocaleDateString()} –{" "}
-          {new Date(period.end_date).toLocaleDateString()} ·{" "}
+          {new Date(period.start_date + "T12:00:00").toLocaleDateString()} –{" "}
+          {new Date(period.end_date + "T12:00:00").toLocaleDateString()} ·{" "}
           <span className="capitalize">{period.status}</span>
         </p>
       </div>

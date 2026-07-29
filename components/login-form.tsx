@@ -39,15 +39,26 @@ export function LoginForm({
       });
       if (error) throw error;
 
-      // Send admins to Admin, everyone else to Portal
-      const { data: driver } = await supabase
-        .from("drivers")
-        .select("role")
-        .eq("user_id", data.user.id)
-        .single();
+      // Send admins and dispatchers to Admin, everyone else to Portal
+            const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-      if (driver?.role === "admin") {
-        router.push("/admin");
+      if (user) {
+        const { data: driverRow } = await supabase
+          .from("drivers")
+          .select("role, status")
+          .eq("user_id", user.id)
+          .single();
+
+        if (
+          driverRow?.role === "admin" ||
+          driverRow?.role === "dispatcher"
+        ) {
+          router.push("/admin");
+        } else {
+          router.push("/portal");
+        }
       } else {
         router.push("/portal");
       }
@@ -119,15 +130,6 @@ export function LoginForm({
               </Button>
             </div>
 
-            <div className="mt-6 text-center text-sm text-slate-600">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/auth/sign-up"
-                className="text-blue-600 font-medium hover:underline"
-              >
-                Sign up
-              </Link>
-            </div>
           </form>
         </CardContent>
       </Card>

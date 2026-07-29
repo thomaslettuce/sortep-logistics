@@ -8,6 +8,9 @@ interface LoadStatusFormProps {
 }
 
 export function LoadStatusForm({ loadId, currentStatus }: LoadStatusFormProps) {
+  const normalizedStatus =
+    currentStatus === "delivered" ? "delivered" : "in_transit";
+
   return (
     <form
       action={updateLoadStatus}
@@ -16,7 +19,7 @@ export function LoadStatusForm({ loadId, currentStatus }: LoadStatusFormProps) {
         const select = form.elements.namedItem("status") as HTMLSelectElement;
         const newStatus = select.value;
 
-        if (newStatus === currentStatus) {
+        if (newStatus === normalizedStatus) {
           e.preventDefault();
           return;
         }
@@ -34,14 +37,11 @@ export function LoadStatusForm({ loadId, currentStatus }: LoadStatusFormProps) {
       <input type="hidden" name="loadId" value={loadId} />
       <select
         name="status"
-        defaultValue={currentStatus}
+        defaultValue={normalizedStatus}
         className="text-xs border border-slate-300 rounded-md px-2 py-1.5 focus:ring-2 focus:ring-blue-500 outline-none"
       >
-        <option value="booked">Booked</option>
         <option value="in_transit">In Transit</option>
         <option value="delivered">Delivered</option>
-        <option value="paid">Paid</option>
-        <option value="cancelled">Cancelled</option>
       </select>
       <button
         type="submit"

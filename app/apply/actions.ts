@@ -25,7 +25,7 @@ export async function submitApplication(formData: FormData) {
     cdl,
     experience,
     message,
-    status: "new",
+    status: "pending",
   });
 
   if (error) {

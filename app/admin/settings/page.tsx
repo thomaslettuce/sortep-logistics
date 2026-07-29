@@ -23,7 +23,7 @@ export default async function CompanySettingsPage({
     .single();
 
   if (!driver || driver.role !== "admin") {
-    redirect("/portal");
+    redirect("/admin");
   }
 
   const { data: settings } = await supabase

@@ -3,18 +3,6 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { LogoutButton } from "@/components/logout-button";
 
-const navItems = [
-  { href: "/admin", label: "Dashboard" },
-  { href: "/admin/drivers", label: "Drivers" },
-  { href: "/admin/trucks", label: "Trucks" },
-  { href: "/admin/loads", label: "Loads" },
-  { href: "/admin/settlements", label: "Settlements" },
-  { href: "/admin/expenses", label: "Expenses" },
-  { href: "/admin/payouts", label: "Payouts" },
-  { href: "/admin/settings", label: "Company Settings" },
-  { href: "/admin/activity", label: "Activity Log" },
-];
-
 export default async function AdminLayout({
   children,
 }: {
@@ -33,9 +21,31 @@ export default async function AdminLayout({
     .eq("user_id", authData.user.id)
     .single();
 
-  if (!driver || driver.role !== "admin") {
+  if (!driver || (driver.role !== "admin" && driver.role !== "dispatcher")) {
     redirect("/portal");
   }
+
+  const isAdmin = driver.role === "admin";
+
+  const navItems = isAdmin
+    ? [
+        { href: "/admin", label: "Dashboard" },
+        { href: "/admin/applications", label: "Applications" },
+        { href: "/admin/drivers", label: "Drivers" },
+        { href: "/admin/trucks", label: "Trucks" },
+        { href: "/admin/loads", label: "Loads" },
+        { href: "/admin/expenses", label: "Expenses" },
+        { href: "/admin/payouts", label: "Payouts" },
+        { href: "/admin/settings", label: "Company Settings" },
+        { href: "/admin/activity", label: "Activity Log" },
+      ]
+    : [
+        { href: "/admin", label: "Dashboard" },
+        { href: "/admin/drivers", label: "Drivers" },
+        { href: "/admin/trucks", label: "Trucks" },
+        { href: "/admin/loads", label: "Loads" },
+        { href: "/admin/expenses", label: "Expenses" },
+      ];
 
   return (
     <div className="min-h-screen bg-slate-100 flex">
@@ -43,7 +53,10 @@ export default async function AdminLayout({
       <aside className="w-64 bg-slate-900 text-white flex flex-col h-screen sticky top-0">
         <div className="p-6 border-b border-slate-700">
           <div className="text-lg font-bold tracking-tight">
-            SORTEP <span className="text-blue-400">ADMIN</span>
+            SORTEP{" "}
+            <span className="text-blue-400">
+              {isAdmin ? "ADMIN" : "DISPATCH"}
+            </span>
           </div>
           <div className="text-xs text-slate-400 mt-1 truncate">
             {driver.email}

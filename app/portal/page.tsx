@@ -67,21 +67,10 @@ export default async function PortalPage() {
     );
   }
 
-  // Admins use the Admin Dashboard, not the driver portal
-  if (driver.role === "admin") {
+  // Admins and dispatchers use the admin shell, not the driver portal
+  if (driver.role === "admin" || driver.role === "dispatcher") {
     redirect("/admin");
   }
-
-  const { data: settlements } = await supabase
-    .from("settlements")
-    .select(
-      `
-      *,
-      loads (load_number)
-    `
-    )
-    .eq("driver_id", driver.id)
-    .order("settlement_date", { ascending: false });
 
   const { data: loads } = await supabase
     .from("loads")
@@ -258,7 +247,7 @@ export default async function PortalPage() {
         </section>
       )}
 
-            {/* My Payouts */}
+      {/* My Payouts */}
       <section className="mb-12">
         <h2 className="text-xl font-semibold text-slate-900 mb-4">
           My Payouts
@@ -329,127 +318,6 @@ export default async function PortalPage() {
         ) : (
           <div className="bg-white border border-slate-200 rounded-xl p-8 text-center text-slate-500">
             No loads assigned yet.
-          </div>
-        )}
-      </section>
-
-      {/* Settlements with transparent breakdown */}
-      <section className="mb-12">
-        <h2 className="text-xl font-semibold text-slate-900 mb-4">
-          My Settlements
-        </h2>
-
-        {settlements && settlements.length > 0 ? (
-          <div className="space-y-4">
-            {settlements.map((s) => {
-              const gross = Number(s.gross_amount || s.amount || 0);
-              const driverPay = Number(s.driver_pay_amount || 0);
-              const leaseOn = Number(s.lease_on_fee_amount || 0);
-              const factoring = Number(s.factoring_fee_amount || 0);
-              const other = Number(s.other_deductions || s.deductions || 0);
-              const net = Number(s.net_to_driver ?? s.net_amount ?? 0);
-
-              return (
-                <div
-                  key={s.id}
-                  className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm"
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
-                    <div>
-                      <div className="font-semibold text-slate-900">
-                        {new Date(s.settlement_date).toLocaleDateString()}
-                      </div>
-                      <div className="text-sm text-slate-500">
-                        Load: {s.loads?.load_number || "—"}
-                      </div>
-                    </div>
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${s.status === "paid"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-yellow-100 text-yellow-800"
-                        }`}
-                    >
-                      {s.status || "pending"}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                    <div className="flex justify-between border-b border-slate-100 py-2">
-                      <span className="text-slate-600">Gross Revenue</span>
-                      <span className="font-medium text-slate-900">
-                        ${gross.toLocaleString()}
-                      </span>
-                    </div>
-
-                    {driverPay > 0 && (
-                      <div className="flex justify-between border-b border-slate-100 py-2">
-                        <span className="text-slate-600">
-                          Driver Pay
-                          {s.driver_pay_pct != null
-                            ? ` (${Number(s.driver_pay_pct)}%)`
-                            : ""}
-                        </span>
-                        <span className="font-medium text-slate-900">
-                          ${driverPay.toLocaleString()}
-                        </span>
-                      </div>
-                    )}
-
-                    {leaseOn > 0 && (
-                      <div className="flex justify-between border-b border-slate-100 py-2">
-                        <span className="text-slate-600">
-                          Lease-On Fee
-                          {s.lease_on_fee_pct != null
-                            ? ` (${Number(s.lease_on_fee_pct)}%)`
-                            : ""}
-                        </span>
-                        <span className="font-medium text-slate-900">
-                          ${leaseOn.toLocaleString()}
-                        </span>
-                      </div>
-                    )}
-
-                    {factoring > 0 && (
-                      <div className="flex justify-between border-b border-slate-100 py-2">
-                        <span className="text-slate-600">
-                          Factoring Fee
-                          {s.factoring_fee_pct != null
-                            ? ` (${Number(s.factoring_fee_pct)}%)`
-                            : ""}
-                        </span>
-                        <span className="font-medium text-slate-900">
-                          ${factoring.toLocaleString()}
-                        </span>
-                      </div>
-                    )}
-
-                    {other > 0 && (
-                      <div className="flex justify-between border-b border-slate-100 py-2">
-                        <span className="text-slate-600">
-                          Expenses & Other Deductions
-                        </span>
-                        <span className="font-medium text-slate-900">
-                          ${other.toLocaleString()}
-                        </span>
-                      </div>
-                    )}
-
-                    <div className="flex justify-between border-b border-slate-100 py-2 sm:col-span-2">
-                      <span className="font-semibold text-slate-900">
-                        Net to You
-                      </span>
-                      <span className="font-bold text-slate-900">
-                        ${net.toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="bg-white border border-slate-200 rounded-xl p-8 text-center text-slate-500">
-            No settlements available yet.
           </div>
         )}
       </section>

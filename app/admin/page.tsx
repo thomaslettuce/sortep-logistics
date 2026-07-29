@@ -29,22 +29,6 @@ export default async function AdminDashboard() {
     .select("*", { count: "exact", head: true })
     .eq("status", "delivered");
 
-  const { count: pendingSettlements } = await supabase
-    .from("settlements")
-    .select("*", { count: "exact", head: true })
-    .eq("status", "pending");
-
-  const { data: pendingSettlementRows } = await supabase
-    .from("settlements")
-    .select("net_to_driver")
-    .eq("status", "pending");
-
-  const pendingSettlementTotal =
-    pendingSettlementRows?.reduce(
-      (sum, row) => sum + Number(row.net_to_driver || 0),
-      0
-    ) || 0;
-
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
     .toISOString()
@@ -93,12 +77,6 @@ export default async function AdminDashboard() {
       href: "/admin/loads?status=delivered",
       linkLabel: "View",
     },
-    {
-      label: "Pending Settlements",
-      value: pendingSettlements || 0,
-      href: "/admin/settlements?status=pending",
-      linkLabel: "Review",
-    },
   ];
 
   return (
@@ -132,24 +110,6 @@ export default async function AdminDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-          <div className="text-sm text-slate-500">
-            Pending Settlement Payouts
-          </div>
-          <div className="text-3xl font-bold text-slate-900 mt-1">
-            $
-            {pendingSettlementTotal.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-            })}
-          </div>
-          <Link
-            href="/admin/settlements?status=pending"
-            className="text-sm text-blue-600 hover:underline mt-3 inline-block"
-          >
-            Review settlements →
-          </Link>
-        </div>
-
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
           <div className="text-sm text-slate-500">Expenses (This Month)</div>
           <div className="text-3xl font-bold text-slate-900 mt-1">
             $
@@ -182,12 +142,6 @@ export default async function AdminDashboard() {
             className="bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition"
           >
             Add / View Loads
-          </Link>
-          <Link
-            href="/admin/settlements"
-            className="bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition"
-          >
-            Settlements
           </Link>
           <Link
             href="/admin/expenses"

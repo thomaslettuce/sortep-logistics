@@ -1,7 +1,21 @@
 import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 export default async function ActivityLogPage() {
   const supabase = await createClient();
+
+  const { data: authData } = await supabase.auth.getUser();
+  if (!authData?.user) redirect("/auth/login");
+
+  const { data: currentDriver } = await supabase
+    .from("drivers")
+    .select("role")
+    .eq("user_id", authData.user.id)
+    .single();
+
+  if (!currentDriver || currentDriver.role !== "admin") {
+    redirect("/admin");
+  }
 
   const { data: logs } = await supabase
     .from("activity_logs")

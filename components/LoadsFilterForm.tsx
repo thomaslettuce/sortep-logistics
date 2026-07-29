@@ -185,11 +185,8 @@ export function LoadsFilterForm({ loads, initial }: Props) {
             className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
           >
             <option value="">All Statuses</option>
-            <option value="booked">Booked</option>
             <option value="in_transit">In Transit</option>
             <option value="delivered">Delivered</option>
-            <option value="paid">Paid</option>
-            <option value="cancelled">Cancelled</option>
           </select>
         </div>
 

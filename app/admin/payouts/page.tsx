@@ -1,9 +1,23 @@
 import { createClient } from "@/lib/supabase/server";
 import { createPayPeriod } from "./actions";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function PayoutsPage() {
   const supabase = await createClient();
+
+  const { data: authData } = await supabase.auth.getUser();
+  if (!authData?.user) redirect("/auth/login");
+
+  const { data: currentDriver } = await supabase
+    .from("drivers")
+    .select("role")
+    .eq("user_id", authData.user.id)
+    .single();
+
+  if (!currentDriver || currentDriver.role !== "admin") {
+    redirect("/admin");
+  }
 
   const { data: periods } = await supabase
     .from("pay_periods")
@@ -97,8 +111,8 @@ export default async function PayoutsPage() {
                     {p.name}
                   </td>
                   <td className="px-5 py-4 text-slate-600">
-                    {new Date(p.start_date).toLocaleDateString()} –{" "}
-                    {new Date(p.end_date).toLocaleDateString()}
+                    {new Date(p.start_date + "T12:00:00").toLocaleDateString()}{" "}
+                    – {new Date(p.end_date + "T12:00:00").toLocaleDateString()}
                   </td>
                   <td className="px-5 py-4 capitalize text-slate-700">
                     {p.status}
