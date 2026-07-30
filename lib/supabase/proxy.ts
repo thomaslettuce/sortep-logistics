@@ -48,14 +48,15 @@ export async function updateSession(request: NextRequest) {
   const user = data?.claims;
 
   // Public routes that anyone can access without logging in
-  const publicRoutes = [
-    "/",
-    "/about",
-    "/careers",
-    "/contact",
-    "/apply",
-    "/apply/success",
-  ];
+const publicRoutes = [
+  "/",
+  "/about",
+  "/careers",
+  "/contact",
+  "/apply",
+  "/apply/success",
+  "/lease-on",
+];
 
   const isPublicRoute =
     publicRoutes.includes(request.nextUrl.pathname) ||

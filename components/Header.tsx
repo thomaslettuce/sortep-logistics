@@ -70,6 +70,9 @@ export default function Header() {
           <Link href="/about" className="hover:text-blue-400 transition">
             About
           </Link>
+          <Link href="/lease-on" className="hover:text-blue-400 transition">
+            Lease-On
+          </Link>
           <Link href="/careers" className="hover:text-blue-400 transition">
             Careers
           </Link>
