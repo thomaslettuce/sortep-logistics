@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 type LoadInfo = {
   load_number: string | null;
@@ -46,8 +46,8 @@ export function PortalPayoutsTable({ payouts }: { payouts: PayoutRow[] }) {
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-      <table className="w-full text-sm">
+    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-x-auto -mx-1 px-1">
+      <table className="w-full text-sm min-w-[520px]">
         <thead className="bg-slate-50 border-b">
           <tr>
             <th className="text-left px-4 py-3 font-medium text-slate-600 w-10"></th>
@@ -84,8 +84,8 @@ export function PortalPayoutsTable({ payouts }: { payouts: PayoutRow[] }) {
                 .filter((l): l is LoadInfo => !!l) || [];
 
             return (
-              <>
-                <tr key={p.id} className="hover:bg-slate-50">
+              <Fragment key={p.id}>
+                <tr className="hover:bg-slate-50">
                   <td className="px-4 py-3">
                     <button
                       type="button"
@@ -228,7 +228,7 @@ export function PortalPayoutsTable({ payouts }: { payouts: PayoutRow[] }) {
                     </td>
                   </tr>
                 )}
-              </>
+              </Fragment>
             );
           })}
         </tbody>

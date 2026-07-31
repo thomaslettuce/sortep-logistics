@@ -265,8 +265,8 @@ export default async function PortalPage() {
         <h2 className="text-xl font-semibold text-slate-900 mb-4">My Loads</h2>
 
         {loads && loads.length > 0 ? (
-          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-            <table className="w-full text-sm">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-x-auto -mx-1 px-1">
+            <table className="w-full text-sm min-w-[640px]">
               <thead className="bg-slate-50 border-b">
                 <tr>
                   <th className="text-left px-5 py-3 font-medium text-slate-600">
