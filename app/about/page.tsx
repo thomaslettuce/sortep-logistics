@@ -2,11 +2,11 @@ export default function AboutPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">
       <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
-        About SORTEP LOGISTICS
+        About Sortep Logistics
       </h1>
       <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed space-y-4">
         <p>
-          SORTEP LOGISTICS LLC is a professional trucking and logistics company
+          Sortep Logistics LLC is a professional trucking and logistics company
           based in Atlanta, Georgia. We specialize in reliable freight
           transportation with a strong focus on safety, on-time performance, and
           treating our drivers with respect.

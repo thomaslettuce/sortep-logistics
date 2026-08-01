@@ -14,7 +14,7 @@ export default async function ApplyPage({
           Driver Application
         </h1>
         <p className="text-slate-600">
-          Interested in driving with SORTEP LOGISTICS? Fill out the form below
+          Interested in driving with Sortep Logistics? Fill out the form below
           and we’ll get back to you.
         </p>
       </div>

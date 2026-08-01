@@ -9,7 +9,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             <div>
               <p className="text-blue-400 text-sm font-semibold tracking-wide uppercase mb-3">
-                SORTEP Logistics
+                Sortep Logistics
               </p>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight">
                 Freight that moves.
@@ -81,7 +81,7 @@ export default function Home() {
                 What we offer
               </h2>
               <p className="text-slate-600 mt-1 text-sm md:text-base">
-                Two ways to work with SORTEP—pick the path that fits you.
+                Two ways to work with Sortep—pick the path that fits you.
               </p>
             </div>
           </div>
@@ -138,7 +138,7 @@ export default function Home() {
                 Lease onto our authority
               </h3>
               <p className="text-slate-600 text-sm leading-relaxed mb-4">
-                Bring your truck and run under SORTEP authority with a simple
+                Bring your truck and run under Sortep authority with a simple
                 fee structure—factoring included.
               </p>
               <ul className="space-y-2 text-sm text-slate-700 mb-6">
@@ -170,11 +170,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Why SORTEP — compact */}
+      {/* Why Sortep — compact */}
       <section className="border-t border-slate-200 bg-slate-50 py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <h2 className="text-xl font-bold text-slate-900 mb-6">
-            Why operators choose SORTEP
+            Why operators choose Sortep
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="rounded-xl bg-white border border-slate-200 p-5">

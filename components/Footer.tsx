@@ -16,7 +16,7 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Quick Links */}
+                    {/* Quick Links */}
           <div>
             <h4 className="text-white font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
@@ -27,12 +27,17 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/about" className="hover:text-blue-400 transition">
-                  About Us
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link href="/lease-on" className="hover:text-blue-400 transition">
+                  Owner Operators
                 </Link>
               </li>
               <li>
                 <Link href="/careers" className="hover:text-blue-400 transition">
-                  Careers
+                  Drive With Us
                 </Link>
               </li>
               <li>
